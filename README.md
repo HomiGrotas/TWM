@@ -1,4 +1,11 @@
 # TWM
 ## Summer project
-Talk With Me - online chat built using python, sqlite db, pyqt5, pyqt5 editor
+Talk With Me - online chat
 
+### Technologies
+* python
+* sockets
+* threading
+* sqlite db
+* pyqt5, pyqt5 editor
+* git
