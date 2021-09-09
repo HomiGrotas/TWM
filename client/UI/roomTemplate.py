@@ -325,7 +325,6 @@ class Ui_Room(object):
         self.msg_loader.start()
         self.connected_users_loader.start()
 
-
     def retranslateUi(self, room):
         _translate = QtCore.QCoreApplication.translate
         room.setWindowTitle(_translate("room", "TWM by HomiGrotas"))
@@ -399,10 +398,16 @@ class Ui_Room(object):
 
     def load_connected_users(self):
         while self.load_bool:
-            users = self.connection.load_connected_users()
-            self.connectedUsers.clear()
-            self.connectedUsers.setText('\n'.join(users))
-            sleep(5)
+            try:
+                users = self.connection.load_connected_users()
+                self.connectedUsers.clear()
+                self.connectedUsers.setText('\n'.join(users))
+                sleep(5)
+            except RuntimeError:
+                self.load_bool = False
+
+        # notify server when client quit
+        self.connection.exit_room()
 
     def send_msg(self):
         msg = self.userTextEntryMessage.toPlainText()
