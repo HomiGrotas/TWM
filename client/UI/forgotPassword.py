@@ -154,9 +154,10 @@ class Ui_ForgotPassword(object):
 
             msg.setWindowTitle("Mail was sent if exists")
             msg.setText("Email with the new password was sent to the email you entered, if it exists.")
-            self.code.setHidden(False)
+            self.code.setHidden(False)      # show code entry box
+            self.email.setDisabled(True)    # prevent email change after code was sent to a specific address
             self.sendEmailPushButton.setText("Submit code")
-            self.expecting_code = True
+            self.expecting_code = True      # waiting to the code sent via mail
 
         else:   # if an email was supposed to be sent already
             submitted_code = self.code.text()
