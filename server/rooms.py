@@ -50,7 +50,9 @@ class Room:
         """
         print("removed", username)
         try:
-            self.__users.remove(username)
-            del self.__messages[client]
+            if username in self.__users:
+                self.__users.remove(username)
+            if client in self.__messages.keys():
+                del self.__messages[client]
         except (ValueError, KeyError) as e:  # user isn't in this room
-            print(e.__str__)
+            print('delete_client', e.__str__())
