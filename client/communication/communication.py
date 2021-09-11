@@ -1,11 +1,16 @@
 import socket
 from pickle import loads, dumps
+from os import environ
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+AES_PUBLIC_KEY = environ['AES_PUBLIC_KEY'].encode()
 
 
 class ServerConnection:
     SERVER_NAME = 'localhost'
     PORT = 6969
-    PACKET_SIZE = 16
+    PACKET_SIZE = 2048
     HEADER_SIZE_LENGTH = 4
 
     def __init__(self):
@@ -24,8 +29,9 @@ class ServerConnection:
         send requests to server using pickle
         """
         msg = dumps(msg)
-        msg = bytes(f"{len(msg):<{ServerConnection.HEADER_SIZE_LENGTH}}", 'utf-8') + msg
-        self._connection.send(msg)
+        encrypted_msg = ServerConnection.encrypt(msg)
+        encrypted_msg_packet = bytes(f"{len(msg):<{ServerConnection.HEADER_SIZE_LENGTH}}", 'utf-8') + encrypted_msg
+        self._connection.send(encrypted_msg_packet)
 
     def receive(self):
         """
@@ -43,9 +49,24 @@ class ServerConnection:
                         msg = self._connection.recv(ServerConnection.PACKET_SIZE)
                         full_msg += msg
 
-                    return loads(full_msg[ServerConnection.HEADER_SIZE_LENGTH:])
+                    decrypted = ServerConnection.decrypt(full_msg[ServerConnection.HEADER_SIZE_LENGTH:])
+                    return loads(decrypted)
         except Exception as e:
-            print(e.__str__())
+            print('rcv', e.__str__())
+            raise e
+
+    @staticmethod
+    def encrypt(msg_bytes: bytes):
+        cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC)
+        ciphertext = cipher.iv + cipher.encrypt(pad(msg_bytes, AES.block_size))
+        return ciphertext
+
+    @staticmethod
+    def decrypt(cipher_text):
+        iv = cipher_text[:16]
+        cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC, iv)
+        plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        return plain_text
 
 
 conn = ServerConnection()

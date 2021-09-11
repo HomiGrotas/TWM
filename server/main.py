@@ -3,8 +3,15 @@ from pickle import loads, dumps
 from select import select
 from server.rooms import Room
 from server.utils.operations import db_operation, chat_operation, mail_operation
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from os import environ
 
 __author__ = "Nadav Shani"
+
+
+AES_PUBLIC_KEY = environ['AES_PUBLIC_KEY'].encode()
+
 
 # chat rooms
 rooms = {
@@ -15,7 +22,7 @@ rooms = {
 
 
 class Server:
-    PACKET_SIZE = 16
+    PACKET_SIZE = 2048
     HEADER_SIZE_LENGTH = 4
 
     def __init__(self, host='localhost', port=6969, users=50):
@@ -78,7 +85,8 @@ class Server:
                 msg = socket_obj.recv(Server.PACKET_SIZE)
                 full_msg += msg
 
-            return loads(full_msg[Server.HEADER_SIZE_LENGTH:])
+            decrypted = Server.decrypt(full_msg[Server.HEADER_SIZE_LENGTH:])
+            return loads(decrypted)
 
     @staticmethod
     def send(socket_obj_c: socket.socket, msg_s: dict) -> None:
@@ -89,8 +97,9 @@ class Server:
         :return: None
         """
         msg_s = dumps(msg_s)
-        msg_s = bytes(f"{len(msg_s):<{Server.HEADER_SIZE_LENGTH}}", 'utf-8') + msg_s
-        socket_obj_c.send(msg_s)
+        encrypted_msg = Server.encrypt(msg_s)
+        encrypted_msg_packet = bytes(f"{len(msg_s):<{Server.HEADER_SIZE_LENGTH}}", 'utf-8') + encrypted_msg
+        socket_obj_c.send(encrypted_msg_packet)
 
     @staticmethod
     def handle_client_data(data: dict, client_soc):
@@ -116,6 +125,19 @@ class Server:
             elif operation_section == 'mail_operation':
                 result = mail_operation(data)
         return result
+
+    @staticmethod
+    def encrypt(msg_bytes: bytes):
+        cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC)
+        ciphertext = cipher.iv + cipher.encrypt(pad(msg_bytes, AES.block_size))
+        return ciphertext
+
+    @staticmethod
+    def decrypt(cipher_text: bytes):
+        iv = cipher_text[:16]
+        cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC, iv)
+        plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        return plain_text
 
 
 s = Server()
