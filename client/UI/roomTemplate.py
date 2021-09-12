@@ -385,7 +385,8 @@ class Ui_Room(object):
             messages = self.connection.load_messages()
             if messages:
                 for msg in messages:
-                    self.add_message(msg['msg'], msg['from'])
+                    if type(msg) is dict:
+                        self.add_message(msg['msg'], msg['from'])
             sleep(0.5)
 
     def add_message(self, msg: str, sender: str):
@@ -404,7 +405,8 @@ class Ui_Room(object):
                 self.connectedUsers.setText('\n'.join(users))
 
                 # "sleep" but if exit -> notify server immediately
-                for i in range(99_999_999):
+                for i in range(50):
+                    sleep(0.1)
                     if not self.load_bool:
                         self.connection.exit_room()                         # notify server when client quit
                         break
