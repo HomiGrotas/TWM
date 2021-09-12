@@ -402,12 +402,14 @@ class Ui_Room(object):
                 users = self.connection.load_connected_users()
                 self.connectedUsers.clear()
                 self.connectedUsers.setText('\n'.join(users))
-                sleep(5)
+
+                # "sleep" but if exit -> notify server immediately
+                for i in range(99_999_999):
+                    if not self.load_bool:
+                        self.connection.exit_room()                         # notify server when client quit
+                        break
             except RuntimeError:
                 self.load_bool = False
-
-        # notify server when client quit
-        self.connection.exit_room()
 
     def send_msg(self):
         msg = self.userTextEntryMessage.toPlainText()
