@@ -16,13 +16,13 @@ def main():
 
     if conn.connected:  # if connected successfully to the server
         form = QtWidgets.QWidget()
-        login_page = Ui_Room({
+        login_page = Ui_LoginPage({
             'login': Ui_LoginPage,
             'forgot_password': Ui_ForgotPassword,
             'sign_up': Ui_SignUp,
             'lobby': Ui_Lobby,
             'room': Ui_Room,
-        }, 'sports', 'usr2')
+        })
 
         login_page.setupUi(form)
         form.show()
