@@ -25,8 +25,11 @@ class Room:
         """
         return the client's new messages
         """
-        messages = self.__messages[client]
-        self.__messages[client] = list()
+        if client in self.__messages.keys():
+            messages = self.__messages[client]
+            self.__messages[client] = list()
+        else:
+            messages = []
         return messages
 
     def add_client(self, client, username: str):
