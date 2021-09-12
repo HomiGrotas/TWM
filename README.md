@@ -17,4 +17,23 @@ Talk With Me - online chat
 
 ### Env. Variables
 * client: AES_PUBLIC_KEY
-* server: AES_PUBLIC_KEY, MAIL_ADDRESS, MAIL_PASSWORD
+* server: 
+  * AES_PUBLIC_KEY
+  * MAIL_ADDRESS - for sending emails to clients
+  * MAIL_PASSWORD
+
+### Windows
+* #### Log In
+![img.png](images/img.png)
+
+*  #### Sign Up
+![img_1.png](images/img_1.png)
+
+*  #### Forgot Password
+![img_2.png](images/img_2.png)
+
+* ####  Lobby
+![img_4.png](images/img_4.png)
+
+*  #### Chat Rooms
+![img_5.png](images/img_5.png)
