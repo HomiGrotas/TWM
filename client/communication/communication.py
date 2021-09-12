@@ -50,7 +50,8 @@ class ServerConnection:
                         full_msg += msg
 
                     decrypted = ServerConnection.decrypt(full_msg[ServerConnection.HEADER_SIZE_LENGTH:])
-                    return loads(decrypted)
+                    if decrypted:
+                        return loads(decrypted)
         except Exception as e:
             print('rcv', e.__str__())
             raise e
@@ -65,7 +66,10 @@ class ServerConnection:
     def decrypt(cipher_text):
         iv = cipher_text[:16]
         cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC, iv)
-        plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        try:
+            plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        except ValueError:
+            plain_text = b''
         return plain_text
 
 
