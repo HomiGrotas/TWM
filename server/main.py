@@ -86,7 +86,8 @@ class Server:
                 full_msg += msg
 
             decrypted = Server.decrypt(full_msg[Server.HEADER_SIZE_LENGTH:])
-            return loads(decrypted)
+            if decrypted:
+                return loads(decrypted)
 
     @staticmethod
     def send(socket_obj_c: socket.socket, msg_s: dict) -> None:
@@ -136,7 +137,10 @@ class Server:
     def decrypt(cipher_text: bytes):
         iv = cipher_text[:16]
         cipher = AES.new(AES_PUBLIC_KEY, AES.MODE_CBC, iv)
-        plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        try:
+            plain_text = unpad(cipher.decrypt(cipher_text), AES.block_size)[16:]
+        except ValueError:
+            plain_text = b''
         return plain_text
 
 
