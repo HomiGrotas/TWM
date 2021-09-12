@@ -25,7 +25,7 @@ class Room:
         """
         return the client's new messages
         """
-        if client in self.__messages.keys():
+        if client in self.__messages:
             messages = self.__messages[client]
             self.__messages[client] = list()
         else:
@@ -55,7 +55,7 @@ class Room:
         try:
             if username in self.__users:
                 self.__users.remove(username)
-            if client in self.__messages.keys():
+            if client in self.__messages:
                 del self.__messages[client]
         except (ValueError, KeyError) as e:  # user isn't in this room
             print('delete_client', e.__str__())
