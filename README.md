@@ -14,3 +14,7 @@ Talk With Me - online chat
 ### Programming languages used
 * Python
 * SQL
+
+### Env. Variables
+* client: AES_PUBLIC_KEY
+* server: AES_PUBLIC_KEY, MAIL_ADDRESS, MAIL_PASSWORD
