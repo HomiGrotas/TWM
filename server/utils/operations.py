@@ -161,6 +161,6 @@ def send_reset_password_code(data: dict):
                 email=email,
     )
     if exists:
-        # send_reset_password_email(email, code)
+        send_reset_password_email(email, code)
         print("send code", code)
     return code
