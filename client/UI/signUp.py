@@ -76,12 +76,10 @@ class Ui_SignUp(object):
                                          "")
         self.EmailTextEdit.setText("")
         self.EmailTextEdit.setObjectName("EmailTextEdit")
-        self.gridLayout.addWidget(self.EmailTextEdit, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.EmailTextEdit, 3, 0, 1, 2)
 
         # ---- password input box
         self.passwordInputBox = QtWidgets.QLineEdit(self.gridLayoutWidget)
-        font = QtGui.QFont()
-        font.setPointSize(14)
         self.passwordInputBox.setFont(font)
         self.passwordInputBox.setStyleSheet("background-color:rgba(0, 0, 0, 0);\n"
                                             "border: none;\n"
@@ -91,7 +89,21 @@ class Ui_SignUp(object):
                                             "")
         self.passwordInputBox.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passwordInputBox.setObjectName("passwordInputBox")
-        self.gridLayout.addWidget(self.passwordInputBox, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.passwordInputBox, 0, 1, 1, 1)
+
+        # ---- password confirmation box
+        self.passwordInputBox2 = QtWidgets.QLineEdit(self.gridLayoutWidget)
+
+        self.passwordInputBox2.setFont(font)
+        self.passwordInputBox2.setStyleSheet("background-color:rgba(0, 0, 0, 0);\n"
+                                            "border: none;\n"
+                                            "border-bottom: 2px solid rgba(46, 82, 101, 200);\n"
+                                            "color: rgba(0, 0, 0, 240);\n"
+                                            "padding-bottom: 7px\n"
+                                            "")
+        self.passwordInputBox2.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.passwordInputBox2.setObjectName("passwordInputBox2")
+        self.gridLayout.addWidget(self.passwordInputBox2, 1, 0, 1, 1)
 
         # ---- mobile num text edit
         self.MobileNumTextEdit = QtWidgets.QLineEdit(self.gridLayoutWidget)
@@ -154,6 +166,7 @@ class Ui_SignUp(object):
 "padding-top:5px;\n"
 "}")
         self.alreadyRegisteredPushBox.setObjectName("alreadyRegisteredPushBox")
+
         # ---- signup push button
         self.signUpPushButton = QtWidgets.QPushButton(SignUp)
         self.signUpPushButton.clicked.connect(lambda: self.sign_up_clicked(SignUp))
@@ -217,6 +230,7 @@ class Ui_SignUp(object):
         self.MobileNumTextEdit.setPlaceholderText(_translate("SignUp", "Mobile Num."))
         self.LastNameTextBox.setPlaceholderText(_translate("SignUp", "Last name"))
         self.passwordInputBox.setPlaceholderText(_translate("SignUp", "Password"))
+        self.passwordInputBox2.setPlaceholderText(_translate("SignUp", "Password Confirmation"))
         self.UsernameInputBox.setPlaceholderText(_translate("SignUp", "Username"))
         self.FirstNameTextBox.setToolTip(_translate("SignUp", "<html><head/><body><p><br/></p></body></html>"))
         self.FirstNameTextBox.setPlaceholderText(_translate("SignUp", "First name"))
@@ -252,6 +266,7 @@ class Ui_SignUp(object):
                         return False
             return True
 
+        msg = QtWidgets.QMessageBox()
         user_data = dict()  # total of 6
         user_data['username'] = self.UsernameInputBox.text()
         user_data['last_name'] = self.LastNameTextBox.text()
@@ -259,29 +274,44 @@ class Ui_SignUp(object):
         user_data['email'] = self.EmailTextEdit.text()
         user_data['phone_number'] = self.MobileNumTextEdit.text()
         user_data['password'] = self.passwordInputBox.text()
-        if data_valid(user_data.values()):
-            sign_up_form = {
-                'operation_section': 'db_operation',
-                'operation': 'sign_up',
-                'response': 0,  # success/error only
-                'kwargs': {
-                    **user_data
-                }
-            }
-            conn.send(sign_up_form)
+        password_confirmation = self.passwordInputBox2.text()
 
-            # register user
-            response = conn.receive()['response']
-            msg = QtWidgets.QMessageBox()
-            try:
-                if response == 'success':
-                    msg.setWindowTitle("Success")
-                    msg.setText("You are registered")
-                    self.switch_window(SignUp, self.windows['login'])
-                else:
-                    msg.setWindowTitle("Couldn't register")
-                    msg.setText(response)
-            except Exception as e:
+        # password fits confirmation
+        if user_data['password'] == password_confirmation:
+
+            # if all the boxes are filled
+            if data_valid(user_data.values()):
+                sign_up_form = {
+                    'operation_section': 'db_operation',
+                    'operation': 'sign_up',
+                    'response': 0,  # success/error only
+                    'kwargs': {
+                        **user_data
+                    }
+                }
+                conn.send(sign_up_form)
+
+                # register user
+                response = conn.receive()['response']
+                try:
+                    if response == 'success':
+                        msg.setWindowTitle("Success")
+                        msg.setText("You are registered")
+                        self.switch_window(SignUp, self.windows['login'])
+                    else:
+                        msg.setWindowTitle("Couldn't register")
+                        msg.setText(response)
+                except Exception as e:
+                    msg.setWindowTitle("Error")
+                    msg.setText(e.__str__())
+
+            # not all field are completed
+            else:
                 msg.setWindowTitle("Error")
-                msg.setText(e.__str__())
-            msg.exec_()
+                msg.setText("You didn't fill all the fields")
+
+        # password and confirmation don't match
+        else:
+            msg.setWindowTitle("Oops")
+            msg.setText("password and password confirmation don't match")
+        msg.exec_()
