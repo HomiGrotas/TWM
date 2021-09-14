@@ -31,6 +31,7 @@ Talk With Me - online chat
 
 *  #### Forgot Password
 ![img_2.png](images/img_2.png)
+![img.png](images/img_6.png)
 
 * ####  Lobby
 ![img_4.png](images/img_4.png)
