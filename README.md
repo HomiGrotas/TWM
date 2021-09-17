@@ -16,9 +16,9 @@ Talk With Me - online chat
 * SQL
 
 ### Env. Variables
-* client: AES_PUBLIC_KEY
+* client: AES_PUBLIC_KEY - 16 digits key
 * server: 
-  * AES_PUBLIC_KEY
+  * AES_PUBLIC_KEY - same as the client's key
   * MAIL_ADDRESS - for sending emails to clients
   * MAIL_PASSWORD
 
