@@ -7,7 +7,7 @@ Talk With Me - online chat
 * threading
 * sqlite db
 * pyqt5, pyqt5 editor
-* git
+* git (first time using commit, push and different branches)
 * AES encryption
 * select
 
