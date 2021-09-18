@@ -1,5 +1,5 @@
 import socket
-from pickle import loads, dumps
+from json import loads, dumps
 from os import environ
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -26,9 +26,9 @@ class ServerConnection:
 
     def send(self, msg: dict):
         """
-        send requests to server using pickle
+        send requests to server using json
         """
-        msg = dumps(msg)
+        msg = dumps(msg).encode()
         encrypted_msg = ServerConnection.encrypt(msg)
         encrypted_msg_packet = bytes(f"{len(msg):<{ServerConnection.HEADER_SIZE_LENGTH}}", 'utf-8') + encrypted_msg
         self._connection.send(encrypted_msg_packet)

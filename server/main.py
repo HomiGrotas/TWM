@@ -1,5 +1,5 @@
 import socket
-from pickle import loads, dumps
+from json import loads, dumps
 from select import select
 from server.rooms import Room
 from server.utils.operations import db_operation, chat_operation, mail_operation
@@ -97,7 +97,7 @@ class Server:
         :param msg_s: msg (dict)
         :return: None
         """
-        msg_s = dumps(msg_s)
+        msg_s = dumps(msg_s).encode()
         encrypted_msg = Server.encrypt(msg_s)
         encrypted_msg_packet = bytes(f"{len(msg_s):<{Server.HEADER_SIZE_LENGTH}}", 'utf-8') + encrypted_msg
         socket_obj_c.send(encrypted_msg_packet)
