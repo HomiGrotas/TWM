@@ -3,8 +3,6 @@ from smtplib import SMTP_SSL
 from queue import Queue
 from ssl import create_default_context
 from threading import Thread
-import random
-import string
 
 
 class MailWorkers:
