@@ -1,10 +1,10 @@
 from sys import exit, argv
 from PyQt5 import QtWidgets
-from client.UI.signUp import Ui_SignUp
-from client.UI.forgotPassword import Ui_ForgotPassword
-from client.UI.loginPage import Ui_LoginPage
+from client.UI.sign_up import Ui_SignUp
+from client.UI.forgot_password import Ui_ForgotPassword
+from client.UI.login_page import Ui_LoginPage
 from client.UI.lobby import Ui_Lobby
-from client.UI.roomTemplate import Ui_Room
+from client.UI.room_template import Ui_Room
 from client.communication.communication import conn
 
 
