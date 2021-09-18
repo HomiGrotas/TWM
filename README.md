@@ -11,7 +11,7 @@ final project of 12th grade
 * threading
 * sqlite db
 * pyqt5, pyqt5 editor
-* git
+* git (first time using commit, push and different branches)
 * AES encryption
 * select
 
@@ -20,9 +20,9 @@ final project of 12th grade
 * SQL
 
 ### Env. Variables
-* client: AES_PUBLIC_KEY
+* client: AES_PUBLIC_KEY - 16 digits key
 * server: 
-  * AES_PUBLIC_KEY
+  * AES_PUBLIC_KEY - same as the client's key
   * MAIL_ADDRESS - for sending emails to clients
   * MAIL_PASSWORD
 
