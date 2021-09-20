@@ -57,3 +57,9 @@ python client/main.py
 
 *  #### Chat Rooms
 ![img_5.png](images/img_5.png)
+
+
+### ToDo - possible upgrades
+* AES -> RSA
+* remember me option
+* files and photos
